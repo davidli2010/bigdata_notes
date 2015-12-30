@@ -35,6 +35,7 @@ SequoiaSQL的配置文件保存在安装路径下的etc目录中。只需要在m
   | :--: | :--: |
   | hawq_master_address_host | master的hostname |
   | hawq_master_address_port | master的端口号 |
+  | hawq_standby_address_host | standby的hostname |
   | hawq_segment_address_port | segment的端口号 |
   | hawq_dfs_url | 访问HDFS的URL |
   | hawq_master_directory | master的数据目录 |
@@ -42,6 +43,7 @@ SequoiaSQL的配置文件保存在安装路径下的etc目录中。只需要在m
   | hawq_master_temp_directory | master的临时目录 |
   | hawq_segment_temp_directory | segment的临时目录 |  
 在slaves中添加segment节点的hostname，每行一个hostname。  
+如果不配置hawq_standby_address_host，则不会启动standby节点。  
 如果HDFS是以HA方式部署的集群，那么需要修改hdfs-client.xml中的配置，将注释掉的HA部分的配置参数修改为HDFS集群的实际值并去掉注释。 此时注意sequoiasql-site.xml中的参数hawq_dfs_url中的url要与dfs.nameservices保持一致。
 
 4. 初始化SequoiaSQL集群。  
