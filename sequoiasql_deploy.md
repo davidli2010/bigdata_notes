@@ -1,30 +1,30 @@
 SequoiaSQL手动部署指南
 =================
 
-前提条件：
+**前提条件**
 
 - 安装SequoiaSQL到要部署的主机上；
 - 多个主机上的安装路径、用户名要保持一致；
 - 多个主机之间配置好hostname。
 
-部署：
+**部署**
 
-1. 为所有主机设置SequoiaSQL环境变量。  
-检查SequoiaSQL安装路径下的文件sequoiasql_path.sh中的变量GPHOME的路径是否为实际的SequoiaSQL安装路径，不符合的需要修改为实际路径。  
+1. 为所有主机设置SequoiaSQL环境变量。
+检查SequoiaSQL安装路径下的文件sequoiasql_path.sh中的变量GPHOME的路径是否为实际的SequoiaSQL安装路径，不符合的需要修改为实际路径。
 将sequoiasql_path.sh添加到用户的启动脚本~/.bashrc中，以安装路径/opt/sequoiasql为例：
-```
-if [ -f /opt/sequoiasql/sequoiasql_path.sh ]; then
+  ```
+  if [ -f /opt/sequoiasql/sequoiasql_path.sh ]; then
     . /opt/sequoiasql/sequoiasql_path.sh
-fi
-```
+  fi
+  ```
 执行```source ~/.bashrc```以使环境变量在当前环境中生效。
 
 2. 设置各主机之间免密码登录。  
 SequoiaSQL集群在初始化、启动和停止的过程中通过SSH执行远程命令，因此需要配置SSH免密码登录，避免过程中输入密码。  
 SequoiaSQL提供的ssql命令可以在主机间快速交换SSH秘钥，只需要在主节点所在的主机执行下面的命令，其中hostfile为除主节点之外的所有主机的hostname文件，每行一个hostname。
-```
-ssql ssh-exkeys -f hostfile
-```
+  ```
+  ssql ssh-exkeys -f hostfile
+  ```
 执行```ssh <hostname>```来检查SSH秘钥交换是否成功。
 
 3. 配置SequoiaSQL。  
@@ -47,15 +47,15 @@ SequoiaSQL的配置文件保存在安装路径下的etc目录中。只需要在m
 4. 初始化SequoiaSQL集群。
 在初始化集群之前要保证hawq_dfs_url的地址是可访问的并且为空，如果hawq_master_directory和hawq_segment_directory使用的不是默认目录，那么需要手动创建。
 在master节点所在的主机上执行如下命令初始化集群：
-```
-ssql init cluster
-```
+  ```
+  ssql init cluster
+  ```
 
 5. 启动SequoiaSQL集群。
 初始化集群成功之后执行如下命令启动集群：
-```
-ssql start cluster
-```
+  ```
+  ssql start cluster
+  ```
 
 6. 验证集群。
 使用psql连接到SequoiaSQL执行操作以确认集群部署正确。
