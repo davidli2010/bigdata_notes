@@ -10,11 +10,11 @@ HDFS手动部署指南
 - 多个主机上的安装路径、用户名要保持一致；
 - 多个主机之间配置好hostname；
 - 多个主机之间配置SSH免密码登录
-  - SequoiaSQL提供的ssql命令可以在主机间快速交换SSH秘钥，只需要在主节点所在的主机执行下面的命令，其中hostfile为除主节点之外的所有主机的hostname文件，每行一个hostname。
-    ```
-    ssql ssh-exkeys -f hostfile
-    ```
-  执行```ssh <hostname>```来检查SSH秘钥交换是否成功。
+  - SequoiaSQL提供的ssql命令可以在主机间快速交换SSH秘钥，只需要在主节点所在的主机执行下面的命令，其中hostfile为除主节点之外的所有主机的hostname文件，每行一个hostname。  
+  ```bash
+  ssql ssh-exkeys -f hostfile
+   ```  
+   执行```ssh <hostname>```来检查SSH秘钥交换是否成功。
 
 部署HDFS集群（cluster）
 ------------------------------
