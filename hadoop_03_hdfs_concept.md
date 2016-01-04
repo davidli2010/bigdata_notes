@@ -24,7 +24,7 @@ HDFS概念
   - FUSE
   - WebDav
 5. 数据流  
-  [数据流图](images/hdfs_datastream.png)
+  ![数据流图](images/hdfs_datastream.png)
 6. Secondary NameNode  
   Secondary NameNode是Primary Namenode的助手，它负责周期性的对HDFS的元数据执行检查点（checkpoint）操作。目前的设计只允许在一个HDFS集群中存在一个Secondary Namenode。
   - 检查点的作用  
@@ -53,7 +53,7 @@ HDFS概念
   在merge的过程中Secondary Namenode对内存的需求与Namenode是相同的，所以对于大型的生产系统，如果将两者部署到相同服务器上，在内存上会出现瓶颈，所以最好将他们分别部署到不同的服务器上。  
   修改hdfs-site.xml中dfs.namenode.secondary.http-address的值可以改变Secondary Namenode的位置。
 7. Quorum Journal Manager (QJM)  
-  [原理图](images/hdfs_cluster_ha.png)  
+  ![原理图](images/hdfs_cluster_ha.png)  
   基本原理：用2N+1台JournalNode存储EditLog。每次写数据操作有大多数返回成功（>=N+1）时即认为该次写成功，数据不会丢失了。基于Paxos。
   - NN1、NN2（或更多个NN节点）只有一个是Active状态，通过自带ZKFailoverController组件和Zookeeper集群协同对所有NN节点进行检测和选举来达到此目的。
   - Active NN的Editlog写入共享的Journal Node集群中，Standby NN通过Journal Node集群获取Editlog，并在本地运行来保持和Active NN的元数据同步。
