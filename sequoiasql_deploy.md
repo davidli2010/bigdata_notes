@@ -53,10 +53,11 @@ SequoiaSQL的配置文件保存在安装路径下的etc目录中。只需要在m
   ssql init cluster
   ```
 
-5. 启动SequoiaSQL集群。  
-初始化集群成功之后执行如下命令启动集群：
+5. 启动和停止SequoiaSQL集群。  
+初始化集群成功之后SequoiaSQL集群已经启动，日常维护中通过执行如下命令启动和停止集群：
   ```
   ssql start cluster
+  ssql stop cluster
   ```
 
 6. 验证集群。  
