@@ -22,6 +22,7 @@ Hadoop的配置文件位于安装路径下的etc目录。
 
 1. 配置hadoop-env.sh  
   - 修改JAVA_HOME的路径
+  - HADOOP_LOG_DIR指定了Hadoop日志文件的存放路径
 
 2. 配置core-site.xml  
   主要配置参数：
@@ -47,13 +48,13 @@ Hadoop的配置文件位于安装路径下的etc目录。
   ```
 
 3. 配置hdfs-site.xml  
-  主要配置参数： 
+  主要配置参数：
 
   | 参数 | 说明 |
   | --- | --- |
   | dfs.replication | 数据块的副本数，默认为3 |
   | dfs.namenode.name.dir | namenode数据文件存放路径 |
-  | dfs.namenode.secondary.http_address | secondary namenode的http访问地址 |
+  | dfs.namenode.secondary.http-address | secondary namenode的http访问地址，启动脚本会根据地址中的域名确定secondary namenode所在的主机 |
   | dfs.datanode.data.dir | datanode数据文件存放路径 |  
   例如：
   ```xml
@@ -69,6 +70,10 @@ Hadoop的配置文件位于安装路径下的etc目录。
       <property>
           <name>dfs.datanode.data.dir</name>
           <value>file:///home/hadoop/data/data</value>
+      </property>
+      <property>
+          <name>dfs.namenode.secondary.http-address</name>
+          <value>ubuntu-54:50090</value>
       </property>
   </configuration>
   ```
@@ -94,3 +99,6 @@ Hadoop的配置文件位于安装路径下的etc目录。
   ```bash
   <HADOOP_HOME>/sbin/start-dfs.sh
   ```
+
+8. 执行jps命令查看运行的节点  
+  jps是java下查看进程的命令，类似于linux的ps命令。要执行jps命令需要将JAVA_HOME/bin设置到PATH路径中。
