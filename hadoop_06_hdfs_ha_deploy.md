@@ -169,28 +169,29 @@ Hadoop的配置文件位于安装路径下的etc目录。
 Failover手动切换
 ---------------
 1. 在hdfs-site.xml中增加配置参数  
+
   | 参数 | 说明 |
   | --- | --- |
   | dfs.client.failover.proxy.provider.[nameservice ID] | 客户端判断哪个namenode是active时使用的Java类 |
   | dfs.ha.fencing.methods | 防止多个namenode成为active的方法，有sshfence和shell两种 |
   | dfs.ha.fencing.ssh.private-key-files | 使用sshfence方法时需要指定private key的存放路径  |
-```xml
-<configuration>
-    <property>
-        <name>dfs.client.failover.proxy.provider.mycluster</name>
-        <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
-    </property>
-    <property>
-        <name>dfs.ha.fencing.methods</name>
-        <value>sshfence</value>
-    </property>
-    <property>
-        <name>dfs.ha.fencing.ssh.private-key-files</name>
-        <value>/home/hadoop/.ssh/id_rsa</value>
-    </property>
-</configuration>
-```
-2. 手动切换active namenode
-```bash
-hdfs haadmin -failover <namenode ID> <namenode ID>
-```
+  ```xml
+  <configuration>
+      <property>
+          <name>dfs.client.failover.proxy.provider.mycluster</name>
+          <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+      </property>
+      <property>
+          <name>dfs.ha.fencing.methods</name>
+          <value>sshfence</value>
+      </property>
+      <property>
+          <name>dfs.ha.fencing.ssh.private-key-files</name>
+          <value>/home/hadoop/.ssh/id_rsa</value>
+      </property>
+  </configuration>
+  ```
+2. 手动切换active namenode  
+  ```
+  hdfs haadmin -failover <namenode ID> <namenode ID>
+  ```
