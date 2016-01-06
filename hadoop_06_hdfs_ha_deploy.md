@@ -1,4 +1,4 @@
-HDFS手动部署指南
+HDFS高可用集群手动部署指南
 ===============
 
 **软件版本**
@@ -16,7 +16,7 @@ HDFS手动部署指南
    ```  
    执行```ssh <hostname>```来检查SSH秘钥交换是否成功。
 
-部署HDFS集群（cluster）
+部署HDFS高可用集群（cluster ha）
 ------------------------------
 Hadoop的配置文件位于安装路径下的etc目录。  
 
@@ -31,14 +31,13 @@ Hadoop的配置文件位于安装路径下的etc目录。
   | --- | --- |
   | fs.defaultFS | HDFS的URL |
   | hadoop.tmp.dir | Hadoop使用的临时目录路径，默认为/tmp |
-  | fs.checkpoint.period | secondary namenode唤醒检查点的周期，默认为3600秒 |
-  | fs.checkpoint.size | secondary namenode在edits文件超过该大小时唤醒检查点，默认为67108864字节 |  
+
   例如：
   ```xml
   <configuration>
       <property>
           <name>fs.defaultFS</name>
-          <value>hdfs://192.168.20.52:9000</value>
+          <value>hdfs://mycluster</value>
       </property>
       <property>
           <name>hadoop.tmp.dir</name>
@@ -54,14 +53,20 @@ Hadoop的配置文件位于安装路径下的etc目录。
   | --- | --- |
   | dfs.replication | 数据块的副本数，默认为3 |
   | dfs.namenode.name.dir | namenode数据文件存放路径 |
-  | dfs.namenode.secondary.http-address | secondary namenode的http访问地址，启动脚本会根据地址中的域名确定secondary namenode所在的主机 |
-  | dfs.datanode.data.dir | datanode数据文件存放路径 |  
+  | dfs.datanode.data.dir | datanode数据文件存放路径 |
+  | dfs.nameservices | 集群的服务名称 |
+  | dfs.ha.namenodes.[nameservice ID] | 集群的namenode列表，[nameservice ID]要与nameservices一致 |
+  | dfs.namenode.rpc-address.[nameservice ID].[namenode ID] | namenode的远程方法调用的地址 |
+  | dfs.namenode.http-address.[nameservice ID].[namenode ID] | namenode的http地址 |
+  | dfs.namenode.shared.edits.dir | 为实施HA而存放edits日志的位置 |
+  | dfs.journalnode.edits.dir | journal node的数据目录 |
+
   例如：
   ```xml
   <configuration>
       <property>
           <name>dfs.replication</name>
-          <value>1</value>
+          <value>3</value>
       </property>
       <property>
           <name>dfs.namenode.name.dir</name>
@@ -72,8 +77,36 @@ Hadoop的配置文件位于安装路径下的etc目录。
           <value>file:///home/hadoop/data/data</value>
       </property>
       <property>
-          <name>dfs.namenode.secondary.http-address</name>
-          <value>ubuntu-54:50090</value>
+          <name>dfs.nameservices</name>
+          <value>mycluster</value>
+      </property>
+      <property>
+          <name>dfs.ha.namenodes.mycluster</name>
+          <value>nn1,nn2</value>
+      </property>
+      <property>
+          <name>dfs.namenode.rpc-address.mycluster.nn1</name>
+          <value>ubuntu-52:9000</value>
+      </property>
+      <property>
+          <name>dfs.namenode.http-address.mycluster.nn1</name>
+          <value>ubuntu-52:50070</value>
+      </property>
+      <property>
+          <name>dfs.namenode.rpc-address.mycluster.nn2</name>
+          <value>ubuntu-54:9000</value>
+      </property>
+      <property>
+          <name>dfs.namenode.http-address.mycluster.nn2</name>
+          <value>ubuntu-54:50070</value>
+      </property>
+      <property>
+          <name>dfs.namenode.shared.edits.dir</name>
+          <value>qjournal://ubuntu-52:8485;ubunubuntu-54:8485;ubuntu-56:8485/mycluster</value>
+      </property>
+      <property>
+          <name>dfs.journalnode.edits.dir</name>
+          <value>file:///home/hadoop/data/journal</value>
       </property>
   </configuration>
   ```
@@ -88,17 +121,34 @@ Hadoop的配置文件位于安装路径下的etc目录。
 
 5. 向所有要部署HDFS的主机复制配置文件，保证所有主机上的配置都是一致的。
 
-6. 格式化namenode
+6. 启动journalnode
+  在所有部署journal node的主机上启动journal node节点：
+  ```bash
+  <HADOOP_HOME>/sbin/hadoop_daemon.sh start journalnode
+  ```
+
+7. 格式化namenode
   在namenode所在的主机上执行下面命令格式化namenode：  
   ```bash
   hdfs namenode -format
   ```
 
-7. 启动HDFS集群
-  在namenode所在的主机上执行下面命令启动HDFS，其中HADOOP_HOME为Hadoop的安装路径：
+8. 启动namenode
+  在namenode所在的主机上执行下面命令启动namenode：
   ```bash
-  <HADOOP_HOME>/sbin/start-dfs.sh
+  <HADOOP_HOME>/sbin/hadoop_daemon.sh start namenode
   ```
 
-8. 执行jps命令查看运行的节点  
+9. 将namenode切换成active
+  ```bash
+  hdfs haadmin -transitionToActive <namenode ID>
+  ```
+
+10. 启动datanode
+  在namenode所在的主机上执行下面命令启动datanode：
+  ```bash
+  <HADOOP_HOME>/sbin/hadoop_daemon.sh start datanode
+  ```
+
+11. 执行jps命令查看运行的节点  
   jps是java下查看进程的命令，类似于linux的ps命令。要执行jps命令需要将JAVA_HOME/bin设置到PATH路径中。
