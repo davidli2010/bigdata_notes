@@ -224,7 +224,7 @@ Failover自动切换
   </configuration>
   ```
 2. 在Zookeeper中初始化HA状态
-  在任意一个节点执行下面命令来初始化HA的状态：
+  在任意一个节点执行下面命令来初始化HA的状态：  
   ```bash
   hdfs zkfc -formatZK
   ```
