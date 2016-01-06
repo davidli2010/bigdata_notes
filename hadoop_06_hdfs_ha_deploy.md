@@ -16,7 +16,7 @@ HDFS高可用集群手动部署指南
    ```  
    执行```ssh <hostname>```来检查SSH秘钥交换是否成功。
 
-部署HDFS高可用集群（cluster ha）
+部署HDFS高可用集群（HA cluster）
 ------------------------------
 Hadoop的配置文件位于安装路径下的etc目录。  
 
@@ -106,7 +106,7 @@ Hadoop的配置文件位于安装路径下的etc目录。
       </property>
       <property>
           <name>dfs.journalnode.edits.dir</name>
-          <value>file:///home/hadoop/data/journal</value>
+          <value>/home/hadoop/data/journal</value>
       </property>
   </configuration>
   ```
@@ -127,19 +127,21 @@ Hadoop的配置文件位于安装路径下的etc目录。
   <HADOOP_HOME>/sbin/hadoop_daemon.sh start journalnode
   ```
 
-7. 格式化namenode  
-  在namenode所在的主机上执行下面命令格式化namenode：  
+7. 格式化namenode主节点并启动  
+  在namenode主节点所在的主机上执行下面命令格式化namenode：  
   ```bash
   hdfs namenode -format
-  ```
-
-8. 启动namenode  
-  在namenode所在的主机上执行下面命令启动namenode：
-  ```bash
   <HADOOP_HOME>/sbin/hadoop_daemon.sh start namenode
   ```
 
-9. 将namenode切换成active  
+8. 启动namenode备节点  
+  在namenode所在的主机上执行下面命令启动namenode：
+  ```bash
+  hdfs namenode -bootstrapStandby
+  <HADOOP_HOME>/sbin/hadoop_daemon.sh start namenode
+  ```
+
+9. 将namenode主节点切换成active  
   ```bash
   hdfs haadmin -transitionToActive <namenode ID>
   ```
@@ -152,3 +154,43 @@ Hadoop的配置文件位于安装路径下的etc目录。
 
 11. 执行jps命令查看运行的节点  
   jps是java下查看进程的命令，类似于linux的ps命令。要执行jps命令需要将JAVA_HOME/bin设置到PATH路径中。
+
+12. 启动和停止HDFS集群
+  在任意主机上执行下面命令关闭HDFS集群：
+  ```bash
+  <HADOOP_HOME>/sbin/stop-dfs.sh
+  ```
+  在任意主机上执行下面命令启动HDFS集群，在启动之后需要手动将namenode切换成active：
+  ```bash
+  <HADOOP_HOME>/sbin/start-dfs.sh
+  hdfs haadmin -transitionToActive <namenode ID>
+  ```
+
+Failover手动切换
+---------------
+1. 在hdfs-site.xml中增加配置参数  
+  | 参数 | 说明 |
+  | --- | --- |
+  | dfs.client.failover.proxy.provider.[nameservice ID] | 客户端判断哪个namenode是active时使用的Java类 |
+  | dfs.ha.fencing.methods | 防止多个namenode成为active的方法，有sshfence和shell两种 |
+  | dfs.ha.fencing.ssh.private-key-files | 使用sshfence方法时需要指定private key的存放路径  |
+```xml
+<configuration>
+    <property>
+        <name>dfs.client.failover.proxy.provider.mycluster</name>
+        <value>org.apache.hadoop.hdfs.server.namenode.ha.ConfiguredFailoverProxyProvider</value>
+    </property>
+    <property>
+        <name>dfs.ha.fencing.methods</name>
+        <value>sshfence</value>
+    </property>
+    <property>
+        <name>dfs.ha.fencing.ssh.private-key-files</name>
+        <value>/home/hadoop/.ssh/id_rsa</value>
+    </property>
+</configuration>
+```
+2. 手动切换active namenode
+```bash
+hdfs haadmin -failover <namenode ID> <namenode ID>
+```
