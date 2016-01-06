@@ -200,12 +200,13 @@ Failover手动切换
 Failover自动切换
 ----------------
 使用Zookeeper可以实现failover自动切换。
+
 1. 在hdfs-site.xml中增加配置参数  
 
   | 参数 | 说明 |
   | --- | --- |
   | dfs.ha.automatic-failover.enabled | 是否开启自动failover |
-  | ha.zookeeper.quorum | Zookeeper节点列表 |
+  | ha.zookeeper.quorum | Zookeeper节点列表 |  
   ```xml
   <configuration>
       <property>
@@ -218,9 +219,9 @@ Failover自动切换
       </property>
   </configuration>
   ```
-2. 在Zookeeper中初始化HA状态
-  在任意一个节点执行下面命令来初始化HA的状态：
-  ```bash
+2. 在Zookeeper中初始化HA状态  
+  在任意一个节点执行下面命令来初始化HA的状态：  
+  ```
   hdfs zkfc -formatZK
   ```
 3. 配置自动failover之后，执行start-dfs.sh启动集群，不再需要手动切换namenode为active。
