@@ -177,6 +177,7 @@ Failover手动切换
   | dfs.client.failover.proxy.provider.[nameservice ID] | 客户端判断哪个namenode是active时使用的Java类 |
   | dfs.ha.fencing.methods | 防止多个namenode成为active的方法，有sshfence和shell两种 |
   | dfs.ha.fencing.ssh.private-key-files | 使用sshfence方法时需要指定private key的存放路径  |
+  例如：
   ```xml
   <configuration>
       <property>
@@ -207,7 +208,9 @@ Failover自动切换
   | 参数 | 说明 |
   | --- | --- |
   | dfs.ha.automatic-failover.enabled | 是否开启自动failover |
-  | ha.zookeeper.quorum | Zookeeper节点列表 |
+  | ha.zookeeper.quorum | Zookeeper节点列表 |  
+  
+  例如：
   ```xml
   <configuration>
       <property>
