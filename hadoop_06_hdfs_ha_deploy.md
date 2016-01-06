@@ -165,6 +165,7 @@ Hadoop的配置文件位于安装路径下的etc目录。
   <HADOOP_HOME>/sbin/start-dfs.sh
   hdfs haadmin -transitionToActive <namenode ID>
   ```
+  hdfs haadmin提供一组方法来检测HA的状态。
 
 Failover手动切换
 ---------------
@@ -195,3 +196,31 @@ Failover手动切换
   ```
   hdfs haadmin -failover <namenode ID> <namenode ID>
   ```
+
+Failover自动切换
+----------------
+使用Zookeeper可以实现failover自动切换。
+1. 在hdfs-site.xml中增加配置参数  
+
+  | 参数 | 说明 |
+  | --- | --- |
+  | dfs.ha.automatic-failover.enabled | 是否开启自动failover |
+  | ha.zookeeper.quorum | Zookeeper节点列表 |
+  ```xml
+  <configuration>
+      <property>
+          <name>dfs.ha.automatic-failover.enabled</name>
+          <value>true</value>
+      </property>
+      <property>
+          <name>ha.zookeeper.quorum</name>
+          <value>ubuntu-52:2181,ubuntu-54:2181,ubuntu-56:2181</value>
+      </property>
+  </configuration>
+  ```
+2. 在Zookeeper中初始化HA状态
+  在任意一个节点执行下面命令来初始化HA的状态：
+  ```bash
+  hdfs zkfc -formatZK
+  ```
+3. 配置自动failover之后，执行start-dfs.sh启动集群，不再需要手动切换namenode为active。
