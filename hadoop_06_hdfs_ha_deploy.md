@@ -121,30 +121,30 @@ Hadoop的配置文件位于安装路径下的etc目录。
 
 5. 向所有要部署HDFS的主机复制配置文件，保证所有主机上的配置都是一致的。
 
-6. 启动journalnode
+6. 启动journalnode  
   在所有部署journal node的主机上启动journal node节点：
   ```bash
   <HADOOP_HOME>/sbin/hadoop_daemon.sh start journalnode
   ```
 
-7. 格式化namenode
+7. 格式化namenode  
   在namenode所在的主机上执行下面命令格式化namenode：  
   ```bash
   hdfs namenode -format
   ```
 
-8. 启动namenode
+8. 启动namenode  
   在namenode所在的主机上执行下面命令启动namenode：
   ```bash
   <HADOOP_HOME>/sbin/hadoop_daemon.sh start namenode
   ```
 
-9. 将namenode切换成active
+9. 将namenode切换成active  
   ```bash
   hdfs haadmin -transitionToActive <namenode ID>
   ```
 
-10. 启动datanode
+10. 启动datanode  
   在namenode所在的主机上执行下面命令启动datanode：
   ```bash
   <HADOOP_HOME>/sbin/hadoop_daemon.sh start datanode
