@@ -49,7 +49,7 @@ PXF的配置文件在SequoiaSQL安装目录下的pxf/conf目录下。
     /opt/sequoiasql/pxf/lib/sequoiadb.jar
     ```
 2. 启动PXF服务  
-在root权限下初始化和启动PXF服务。
+在root权限下初始化和启动PXF服务，PXF服务的默认端口号是51200。
     - 初始化PXF服务
     ```
     service pxf-service init
