@@ -74,10 +74,10 @@ PXF的配置文件在SequoiaSQL安装目录下的pxf/conf目录下。
 4. 创建表之后就可以使用SQL语法查询该表。不能在表上更新和删除记录。
 
 5. 停止、重启PXF服务，查看PXF服务状态
-```
-service pxf-service stop
-service pxf-service restart
-service pxf-service status
-```
+    ```
+    service pxf-service stop
+    service pxf-service restart
+    service pxf-service status
+    ```
 
 6. 卸载SequoiaSQL时备份pxf/conf目录，在重新安装SequoiaSQL时覆盖pxf/conf目录即可。
