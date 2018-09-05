@@ -7,5 +7,3 @@ notes for big data technologies, such as haoop, spark etc.
 - [HDFS手动部署指南](hadoop_04_hdfs_deploy.md)
 - [Zookeeper手动部署指南](hadoop_05_zookeeper_deploy.md)
 - [HDFS高可用集群手动部署指南](hadoop_06_hdfs_ha_deploy.md)
-- [SequioaSQL手动部署指南](sequoiasql_deploy.md)
-- [SequoiaSQL PXF手动部署指南](sequoiasql_pxf_deploy.md)
